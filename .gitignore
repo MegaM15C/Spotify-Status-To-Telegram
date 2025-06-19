@@ -1,0 +1,6 @@
+venv
+.env
+.idea
+__py_cache__
+.cache-Максим
+anon.session
