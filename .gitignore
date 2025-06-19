@@ -1,6 +1,6 @@
 venv
 .env
 .idea
-__py_cache__
+__pycache__
 .cache-Максим
 anon.session
