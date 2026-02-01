@@ -45,8 +45,8 @@ async def main():
                 full_user_info
                 ) # update status 
             
-            # Wait 15 seconds to avoid being blocked for flooding
-            await asyncio.sleep(15)
+            # Wait 20 seconds to avoid being blocked for flooding
+            await asyncio.sleep(20)
         
         except Exception as e:
             print(current)
