@@ -1,6 +1,7 @@
-venv
+__pycache__
+.venv
 .env
 .idea
-_pycache_
-#.cache-Максим
-anon.session
+.cache-*
+*.session
+host.session-journal

@@ -14,7 +14,10 @@ requests==2.32.4
 rsa==4.9.1
 setuptools==80.9.0
 six==1.17.0
-spotipy==2.25.1
-Telethon==1.40.0
+spotipy==2.25.2
+Telethon==1.42.0
 urllib3==2.4.0
 zope.interface==7.2
+## The following requirements were added by pip freeze:
+aiofiles==25.1.0
+qrcode==8.2
