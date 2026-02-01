@@ -1,64 +1,46 @@
 import asyncio
-import time
-import os
-import spotipy
-from dotenv import load_dotenv
-from telethon import TelegramClient, functions
-import modules.datet as timestp
-from modules.auth import get_session
 
-load_dotenv()
-
-# Init Spotify client API
-spotify = spotipy.Spotify(
-    auth_manager=spotipy.SpotifyOAuth(
-        scope="user-read-currently-playing",
-        client_id=os.getenv('SPOTIFY_CLIENT_ID'),
-        client_secret=os.getenv('SPOTIFY_CLIENT_SECRET'),
-        redirect_uri=os.getenv('REDIRECT_URL'),
-        username=os.getenv('SPOTIFY_USERNAME'),
-    )
+# from telethon import functions, errors
+import modules.spotify_time as timestp
+from modules.telegram import (
+    get_session,
+    update_telegram_status,
+    get_user_info
 )
-
-inst = ' | inst: @dngrmax'
-user = '@dngrmax'
+from typing import Any
+from modules.spotify import initialie_spotify_client
+from modules.formating_music import _crop_bio, format_current_playing
 
 
 async def main():
     client = await get_session()
-
+    spotify = await initialie_spotify_client()
+    
+    async def _get_spotify_track() -> (Any | None):
+        '''
+        gets spotify currently playing from '/v1/me/player/currently-playing'
+        Returns: 
+        '''
+        # don't block loop
+        return await asyncio.to_thread(spotify.current_user_playing_track)
+    
     while True:
         try:
-            current = spotify.current_user_playing_track()
-            # print(current)
-
-            if not current:
-                muzon = "ᯤ Spotify isn't playing"
-            elif not current['is_playing']:
-                muzon = "ᯤ Spotify is paused"
-            elif current["currently_playing_type"] == "track":
-                timestamp = timestp.give_min_sec_music(current['progress_ms'])
-                track = current["item"]["name"]
-                artist = current["item"]["artists"][0]["name"]
-                muzon = f"ᯤ Spotify | {timestamp} | {artist} - {track}"
-            elif current["currently_playing_type"] == "episode":
-                timestamp = timestp.give_ho_mi_se_podcast(ms=current['progress_ms'])
-                muzon = f"ᯤ Spotify is playing a podcast | {timestamp}"
-
-            if len(muzon) >= 53:
-                muzon = muzon[:50] + '...' + inst
-            else:
-                muzon += inst
-
-            full = await client(functions.users.GetFullUserRequest('me'))
-            stat = full.full_user.about
-
-            if muzon != stat:
-                await client(functions.account.UpdateProfileRequest(about=muzon))
-
+            current = await _get_spotify_track()
+            full_user_info, user_is_premium = await get_user_info(client)
+            
+            music = await format_current_playing(
+                current=current,
+                user_is_premium=user_is_premium
+                )
+            
+            await update_telegram_status(client, music, full_user_info)
+            
+            # wait 15 sec for security
             await asyncio.sleep(15)
-
+        
         except Exception as e:
+            print(current)
             print(e)
             await asyncio.sleep(30)
 
