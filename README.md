@@ -9,8 +9,8 @@ Python >= 3.9
 - Получение текущего трека из Spotify через официальный API (spotipy).
 - Поддержка Telegram через Telethon.
 - Автоматическое обновление поля "about" с форматом:
-- Музыка: `ᯤ Spotify | MM:SS | Artist - Track`
-- Подкаст: `ᯤ Spotify is playing a podcast | HH:MM:SS`
+    - Музыка: `ᯤ Spotify | MM:SS | Artist - Track`
+    - Подкаст: `ᯤ Spotify is playing a podcast | HH:MM:SS`
 - Кроп длинных статусов для обычных и Premium пользователей Telegram.
 - Безопасная авторизация через QR-код или сохранённую сессию (host.session).
 - Асинхронная архитектура, чтобы не блокировать процесс при запросах к API.
@@ -54,7 +54,7 @@ python3 -m venv .venv
 source .venv/bin/activate # Для Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
-3. Создайте .env файл в корне проекта с необходимыми переменными (пункт с получением API ключей ниже):
+3. Создайте .env файл в корне проекта с необходимыми переменными, полученными выше:
 ```ini
 TG_API_ID=<ваш Telegram API ID>
 TG_API_HASH=<ваш Telegram API Hash>
