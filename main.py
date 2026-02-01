@@ -2,6 +2,7 @@ import time
 import os
 import typing
 import spotipy
+import asyncio
 
 import modules.datet as timestp
 
@@ -29,9 +30,12 @@ current_playing = typing.List[typing.Union[str, str, str]]
 
 def update_status(_current_playing):
     current = spotify.current_user_playing_track()
+    print()
     print(current)
     if current == None:
         muzon = "ᯤ Spotify isn't playing"
+    elif current['is_playing'] == False:
+        muzon = "ᯤ Spotify is paused"
         
     elif current["currently_playing_type"] == "track":
         timestamp = timestp.give_min_sec_music(current['progress_ms'])
@@ -46,12 +50,12 @@ def update_status(_current_playing):
         muzon = f"ᯤ Spotify is playing a podcast | {timestamp}"
         
 
-    if len(muzon) >= 53:
+    if len(muzon) >= 53:                   
         muzon = muzon[:50] + '...' + inst
     else:
         muzon += inst
 
-    with TelegramClient('anon', os.getenv('TG_API_ID'), os.getenv('TG_API_HASH')) as client:
+    with TelegramClient('host', os.getenv('TG_API_ID'), os.getenv('TG_API_HASH')) as client:
         full = client(functions.users.GetFullUserRequest(user))
         stat = full.full_user.about
         if muzon != stat:
@@ -67,8 +71,8 @@ if __name__ == '__main__':
         try:
             while True:
                 # print("Получаю обновления")
-                current_playing = update_status(current_playing)
-                time.sleep(10)
+                current_playing = (update_status(current_playing)) 
+                time.sleep(15)
 
         except Exception as e:
             print(e)
