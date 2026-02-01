@@ -6,18 +6,34 @@ from const import (
     MUSIC_STOPPED,
     MUSIC_DOESNT_PLAYING
 )
+from typing import Any
 import modules.spotify_time as timestp
 
 async def format_current_playing(
-    current:dict,
+    current: Any,
     user_is_premium: bool
-    ):
-    '''
-    Docstring for format_current_playing
-    
-    :param current: currently playing from spotify api
-    :type current: dict
-    '''
+) -> str:
+    """
+    Format the current Spotify playback state into a string suitable
+    for a Telegram profile bio.
+
+    Logic:
+    - If there is no active playback, return a predefined "not playing" message.
+    - If playback exists but is paused, return a predefined "stopped" message.
+    - If a track is playing, include its progress (MM:SS), artist, and title.
+    - If a podcast episode is playing, include its progress (HH:MM:SS).
+    - After formatting, pass the result to the bio-cropping helper to ensure
+      it fits Telegram limits depending on Premium status.
+
+    Args:
+        current (Any): Raw "currently playing" object returned by the Spotify API.
+                       Can be None or a dict with playback details.
+        user_is_premium (bool): Indicates whether the Telegram user has Premium,
+                                which affects the maximum allowed bio length.
+
+    Returns:
+        str: Final formatted and cropped string ready to be set as the Telegram bio.
+    """
     if not current: # if music doesn't playing
         music = MUSIC_DOESNT_PLAYING
         

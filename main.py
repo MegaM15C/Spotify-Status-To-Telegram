@@ -1,16 +1,21 @@
 import asyncio
 
-# from telethon import functions, errors
-import modules.spotify_time as timestp
-from modules.telegram import (
+from modules import (
+    # Telethon features
     get_session,
     update_telegram_status,
-    get_user_info
+    get_user_info,
+    
+    # Spotipy init
+    initialie_spotify_client,
+    
+    # formatting currently playing
+    format_current_playing
 )
 from typing import Any
-from modules.spotify import initialie_spotify_client
-from modules.formating_music import _crop_bio, format_current_playing
+from dotenv import load_dotenv
 
+load_dotenv()
 
 async def main():
     client = await get_session()
@@ -26,17 +31,21 @@ async def main():
     
     while True:
         try:
-            current = await _get_spotify_track()
-            full_user_info, user_is_premium = await get_user_info(client)
+            current = await _get_spotify_track() # get currently playing
+            full_user_info, user_is_premium = await get_user_info(client) # get user info in telegram
             
-            music = await format_current_playing(
+            music = await format_current_playing( # format currently playing
                 current=current,
                 user_is_premium=user_is_premium
                 )
             
-            await update_telegram_status(client, music, full_user_info)
+            await update_telegram_status(
+                client,
+                music,
+                full_user_info
+                ) # update status 
             
-            # wait 15 sec for security
+            # Wait 15 seconds to avoid being blocked for flooding
             await asyncio.sleep(15)
         
         except Exception as e:
