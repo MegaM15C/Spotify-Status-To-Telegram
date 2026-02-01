@@ -1,0 +1,8 @@
+INST=' | inst: @dngrmax'
+LEN_INST=len(INST)
+
+MAX_SYMBOLS_IN_BIO_NON_PREMIUM=70
+MAX_SYMBOLS_IN_BIO_PREMIUM=140
+
+MUSIC_DOESNT_PLAYING="ᯤ Spotify isn't playing"
+MUSIC_STOPPED="ᯤ Spotify is paused"
